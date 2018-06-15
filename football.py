@@ -2,19 +2,45 @@
 #encoding:utf-8
 
 import argparse, sys, os, re, time, enum
-from typing import List
+from typing import List,Dict
+
+storage = {}
 
 class FieldType(enum.Enum):
     home, away, neutral = range(3)
 class WinType(enum.Enum):
     win, lose, draw = range(3)
 
+class field_names(object):
+    team = 'team'
+    city = 'city'
+    country = 'country'
+    match = 'match'
+
+def get_field_value(field_name:str, index:int)->str:
+    index_map = storage.get(field_name)
+    return index_map.get(index)
+
+def get_field_index(field_name:str, value:str)->int:
+    counter_name = '__index__'
+    if field_name not in storage: storage[field_name] = {}
+    index_map = storage.get(field_name)
+    if counter_name not in index_map: index_map[counter_name] = 1
+    if value not in index_map:
+        index = index_map[counter_name]
+        index_map[counter_name] = index + 1
+        index_map[value] = index
+        index_map[index] = value
+        return index
+    else:
+        return index_map.get(value)
+
 class MatchRecordItem(object):
     def __init__(self, data):
         if not data: return
         self.date = time.strptime(data[0], '%Y-%m-%d')
         self.team = data[1]
-        self.oponent = data[2]
+        self.opponent = data[2]
         self.score = int(data[3])
         self.opponent_score = int(data[4])
         self.match = data[5]
@@ -27,23 +53,23 @@ class MatchRecordItem(object):
     def reverse(self):
         item = MatchRecordItem(None)
         item.date = self.date
-        item.team, item.oponent = self.oponent, self.team
+        item.team, item.opponent = self.opponent, self.team
         item.score, item.opponent_score = self.opponent_score, self.score
         item.match = self.match
         item.city, item.country = self.city, self.country
-        item.field = FieldType.away
+        item.field = FieldType.neutral if self.field == FieldType.neutral else FieldType.away
         item.type = WinType(1 - self.type.value) if self.score != self.opponent_score else WinType.draw
         return item
 
     def __repr__(self):
-        return '%s|%s|%s|%d|%d|%s|%s|%s|%s|%s'%(time.strftime('%Y-%m-%d', self.date),
-                                             self.team, self.oponent, self.score, self.opponent_score,
-                                             self.match, self.city, self.country, self.field.name, self.type.name)
+        return '%s|%s|%s|%d|%d|%s|%s|%s|%s'%(time.strftime('%Y-%m-%d', self.date),
+                                                self.team, self.opponent, self.score, self.opponent_score,
+                                                self.match, self.country, self.field.name, self.type.name)
 
 def load_data(file_path: str)->List[MatchRecordItem]:
     assert os.path.exists(file_path)
     record_list, record_map = [], {}
-    group_name_list = ('team', 'city', 'country', 'match')
+    group_name_list = (field_names.team, field_names.match, field_names.country, field_names.city)
     for name in group_name_list:
         record_map[name] = {}
     with open(file_path, 'r+') as fp:
@@ -60,6 +86,16 @@ def load_data(file_path: str)->List[MatchRecordItem]:
                 record_list.append(it)
     return record_list, record_map
 
+
+def assert_field_name(data_map:Dict[str, List[MatchRecordItem]], field_name:str, value:str):
+    group_map = data_map.get(field_name)
+    if value not in group_map:
+        recommend_list = []
+        for name in group_map.keys():
+            if str(name).find(value) >= 0: recommend_list.append(name)
+        print('[NOT_FOUND] --%s=%r,'%(field_name, value),', '.join(recommend_list))
+        sys.exit()
+
 def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--file-path', '-f', required=True, help='match history score data file')
@@ -70,15 +106,19 @@ def main():
     arguments.add_argument('--city', '-i', help='city where match took place')
     options = arguments.parse_args(sys.argv[1:])
     record_list, record_map = load_data(options.file_path)
+
     filter_name_list = []
     if options.team:
-        filter_name_list.append('team')
+        filter_name_list.append(field_names.team)
+        assert_field_name(record_map, field_names.team, options.team)
     if options.match:
-        filter_name_list.append('match')
+        filter_name_list.append(field_names.match)
+        assert_field_name(record_map, field_names.match, options.match)
     if options.city:
-        filter_name_list.append('city')
+        filter_name_list.append(field_names.city)
     if options.country:
-        filter_name_list.append('country')
+        filter_name_list.append(field_names.country)
+        assert_field_name(record_map, field_names.country, options.country)
     if not filter_name_list:
         result_list = record_list
     else:
@@ -97,7 +137,7 @@ def main():
     if options.year:
         for n in range(len(result_list)):
             item = result_list[n]
-            if item.date.tm_year == options.year: temp_list.append(item)
+            if item.date.tm_year >= options.year: temp_list.append(item)
         result_list = temp_list
     for n in range(len(result_list)):
         print(result_list[n])
