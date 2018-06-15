@@ -3,8 +3,13 @@
 
 import argparse, sys, os, re, time, enum
 from typing import List,Dict
+from operator import attrgetter, itemgetter
 
 storage = {}
+
+EURO_CUP = 'UEFA Euro'
+FIFA_CUP = 'FIFA World Cup'
+FIFA_CUP_QUALIFICATION = 'FIFA World Cup qualification'
 
 class FieldType(enum.Enum):
     home, away, neutral = range(3)
@@ -96,6 +101,56 @@ def assert_field_name(data_map:Dict[str, List[MatchRecordItem]], field_name:str,
         print('[NOT_FOUND] --%s=%r,'%(field_name, value),', '.join(recommend_list))
         sys.exit()
 
+def analysis_euro(data_map:Dict[str,List[MatchRecordItem]]):
+    item_list = data_map[field_names.match].get(EURO_CUP)
+    temp_list = []
+    for n in range(len(item_list)):
+        item = item_list[n]
+        if item.date.tm_year == 2016: temp_list.append(item)
+    print('[%s]' % EURO_CUP)
+    analysis_data(temp_list)
+
+def analysis_fifa(data_map:Dict[str,List[MatchRecordItem]]):
+    item_list = data_map[field_names.match].get(FIFA_CUP)
+    temp_list = []
+    for n in range(len(item_list)):
+        item = item_list[n]
+        if item.date.tm_year == 2014: temp_list.append(item)
+    print('[%s]' % FIFA_CUP)
+    analysis_data(temp_list)
+
+def analysis_fifa_qualification(data_map:Dict[str,List[MatchRecordItem]]):
+    item_list = data_map[field_names.match].get(FIFA_CUP_QUALIFICATION)
+    temp_list = []
+    for n in range(len(item_list)):
+        item = item_list[n]
+        if item.date.tm_year >= 2014: temp_list.append(item)
+    print('[%s]'%FIFA_CUP_QUALIFICATION)
+    analysis_data(temp_list)
+
+def analysis_data(data_list:List[MatchRecordItem]):
+    stat_map = {}
+    for n in range(len(data_list)):
+        item = data_list[n]
+        if item.team not in stat_map: stat_map[item.team] = [0]*5
+        stat = stat_map[item.team]
+        stat[0] += item.score
+        if item.score > item.opponent_score:
+            stat[1] += item.score - item.opponent_score
+            stat[2] += 1
+        elif item.score < item.opponent_score:
+            stat[4] += 1
+        else:
+            stat[3] += 1
+    result = []
+    for name, stat in stat_map.items():
+        stat.insert(0, name)
+        result.append(stat)
+    result.sort(key=itemgetter(3,2,1), reverse=True)
+    for n in range(len(result)):
+        item = result[n]
+        print(','.join([str(x) for x in item]))
+
 def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--file-path', '-f', required=True, help='match history score data file')
@@ -141,6 +196,10 @@ def main():
         result_list = temp_list
     for n in range(len(result_list)):
         print(result_list[n])
+    sys.exit()
+    analysis_fifa(data_map=record_map)
+    analysis_euro(data_map=record_map)
+    analysis_fifa_qualification(data_map=record_map)
 
 if __name__ == '__main__':
     main()
