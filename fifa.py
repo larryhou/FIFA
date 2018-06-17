@@ -38,9 +38,9 @@ class MatchSummary(object):
         return item
 
     def __repr__(self):
-        return '%s|%s|%s|%d|%d|%s|%s|%s'%(time.strftime('%Y-%m-%d', self.date),
+        return '%s|%s|%s|%d|%d|%s'%(time.strftime('%Y-%m-%d', self.date),
                                                 self.team, self.opponent, self.score, self.opponent_score,
-                                                self.group, self.stadium, self.venue)
+                                                self.group)
 
 def load(file_path:str)->List[MatchSummary]:
     assert os.path.exists(file_path)
