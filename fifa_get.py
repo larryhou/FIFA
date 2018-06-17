@@ -11,7 +11,7 @@ class MatchGroup(enum.Enum):
 def decode_match_time(value:str)->str:
     items = value.split(' ')
     date, month, year, time = items[0], month_abbrs.get(items[1].title()[:3]), items[2], items[4]
-    return '%s-%02d-%sT%s'%(year, month, date, time)
+    return '%s-%02d-%s %s'%(year, month, date, time)
 
 def decode_match_group(value:str)->MatchGroup:
     if re.match(r'^Group \w$', value):
@@ -46,12 +46,12 @@ def dump_worldcup(url:str):
         if team_away_code not in team_abbrs:
             team_abbrs[team_away_code] = team_away
         score = [x for x in item.find('.s-scoreText').text().split('-')]
-        record = ['%s%02d'%(datetime[:4], int(matchnum))]
+        record = []
         record.extend([datetime, team_home, team_away])
         record.extend(score)
         record.append(group.name)
         record.extend([stadium, venue])
-        print(','.join(record))
+        print('|'.join(record))
 
 def main():
     jq = pyquery.PyQuery(url='https://www.fifa.com/fifa-tournaments/statistics-and-records/worldcup/index.html')
