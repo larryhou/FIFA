@@ -61,10 +61,9 @@ def load(file_path:str)->List[MatchSummary]:
     match_list.sort(key=cmp_to_key(cmp))
     return match_list
 
-def dump_stat_map(stat_map:Dict[int, List], year:int, span:int):
+def filter_year_list(stat_map:[int, List], year:int, span:int):
     year_list = list(stat_map.keys())
     temp_list = []
-    csv_sheet = []
     for n in range(len(year_list)):
         y = year_list[n]
         if span == 0:
@@ -75,12 +74,16 @@ def dump_stat_map(stat_map:Dict[int, List], year:int, span:int):
             if y < year + span: continue
         temp_list.append(y)
     temp_list.sort(reverse=True)
+    return temp_list
+
+def dump_stat_map(stat_map:Dict[int, List], year_list:List[int]):
+    csv_sheet = []
     matY, matX, offset = 0, 0, 0
     num_of_horizon = 3
     max_stat_count = 0
     header = ['', '进', '丢', '场', '胜', '平', '负']
-    for y in temp_list:
-        year_stat_list = stat_map.get(y)
+    for year in year_list:
+        year_stat_list = stat_map.get(year)
         stat_count = len(year_stat_list)
         max_stat_count = max(stat_count, max_stat_count)
         for n in range(stat_count + 1):
@@ -88,7 +91,7 @@ def dump_stat_map(stat_map:Dict[int, List], year:int, span:int):
             while row >= len(csv_sheet): csv_sheet.append([])
             cell_list = csv_sheet[row]
             if n == 0:
-                header[0] = '%d'%y
+                header[0] = '%d'%year
                 cell_list.extend(header)
                 continue
             if matX * 7 > len(cell_list):
@@ -103,7 +106,6 @@ def dump_stat_map(stat_map:Dict[int, List], year:int, span:int):
             max_stat_count = 0
     for row in csv_sheet:
         print(','.join([str(x) for x in row]))
-
 
 def generate_stat_map(match_list:List[MatchSummary]):
     season_map, stat_map = {}, {}
@@ -137,12 +139,19 @@ def anlaysis_team_stat(match_list:List[MatchSummary]):
     result_list.sort(key=itemgetter(3, 4, 5), reverse=True)
     return result_list
 
-def find_team_stat(match_list:List[MatchSummary]):
-    pass
+def find_team_stat(match_list:List[MatchSummary], team, year_list:List[int]):
+    for n in range(len(match_list)):
+        item = match_list[n]
+        if item.date.tm_year in year_list:
+            if item.team.find(team) >= 0:
+                print(item)
+            elif item.opponent.find(team) >=0:
+                print(item.reverse())
 
 def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--file-path', '-f', required=True)
+    arguments.add_argument('--team', '-t')
     arguments.add_argument('--year', '-y', type=int, default=0)
     arguments.add_argument('--span', '-s', type=int, default=0)
     arguments.add_argument('--command', '-c',
@@ -153,12 +162,14 @@ def main():
     match_list = load(options.file_path)
     command = options.command
     stat_map = generate_stat_map(match_list)
+    year_list = filter_year_list(stat_map, options.year, options.span)
     if command in script_commands.dump:
-        for item in match_list: print(item)
+        for item in match_list:
+            if item.date.tm_year in year_list: print(item)
     elif command in script_commands.stat:
-        dump_stat_map(stat_map, options.year, options.span)
+        dump_stat_map(stat_map, year_list)
     elif command in script_commands.find:
-        find_team_stat(match_list)
+        find_team_stat(match_list, options.team, year_list)
     else:
         raise NotImplementedError()
 
