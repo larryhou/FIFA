@@ -95,7 +95,7 @@ def dump_stat_map(stat_map:Dict[int, List], year_list:List[int]):
                 cell_list.extend(header)
                 continue
             if matX * 7 > len(cell_list):
-                cell_list.extend(['']*(matX-1)*7)
+                cell_list.extend(['']*(matX*7 - len(cell_list)))
             stat = year_stat_list[n - 1]
             cell_list.extend(stat)
         matX += 1
@@ -136,7 +136,7 @@ def anlaysis_team_stat(match_list:List[MatchSummary]):
         stat.insert(0, name)
         result_list.append(stat)
     from operator import itemgetter
-    result_list.sort(key=itemgetter(3, 4, 5), reverse=True)
+    result_list.sort(key=itemgetter(3, 4, 5, 1), reverse=True)
     return result_list
 
 def find_team_stat(match_list:List[MatchSummary], team, year_list:List[int]):

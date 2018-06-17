@@ -10,7 +10,7 @@
 201410|2014-06-15 16:00|France|Honduras|3|0|E|Estadio Beira-Rio|Porto Alegre
 201411|2014-06-15 19:00|Argentina|Bosnia and Herzegovina|2|1|F|Estadio do Maracana|Rio De Janeiro
 201413|2014-06-16 13:00|Germany|Portugal|4|0|G|Arena Fonte Nova|Salvador
-201412|2014-06-16 16:00|IR Iran|Nigeria|0|0|F|Arena da Baixada|Curitiba
+201412|2014-06-16 16:00|Iran|Nigeria|0|0|F|Arena da Baixada|Curitiba
 201414|2014-06-16 19:00|Ghana|USA|1|2|G|Estadio das Dunas|Natal
 201415|2014-06-17 13:00|Belgium|Algeria|2|1|H|Estadio Mineirao|Belo Horizonte
 201417|2014-06-17 16:00|Brazil|Mexico|0|0|A|Estadio Castelao|Fortaleza
@@ -24,7 +24,7 @@
 201424|2014-06-20 13:00|Italy|Costa Rica|0|1|D|Arena Pernambuco|Recife
 201425|2014-06-20 16:00|Switzerland|France|2|5|E|Arena Fonte Nova|Salvador
 201426|2014-06-20 19:00|Honduras|Ecuador|1|2|E|Arena da Baixada|Curitiba
-201427|2014-06-21 13:00|Argentina|IR Iran|1|0|F|Estadio Mineirao|Belo Horizonte
+201427|2014-06-21 13:00|Argentina|Iran|1|0|F|Estadio Mineirao|Belo Horizonte
 201429|2014-06-21 16:00|Germany|Ghana|2|2|G|Estadio Castelao|Fortaleza
 201428|2014-06-21 18:00|Nigeria|Bosnia and Herzegovina|1|0|F|Arena Pantanal|Cuiaba
 201431|2014-06-22 13:00|Belgium|Russia|1|0|H|Estadio do Maracana|Rio De Janeiro
@@ -39,7 +39,7 @@
 201437|2014-06-24 16:00|Japan|Colombia|1|4|C|Arena Pantanal|Cuiaba
 201438|2014-06-24 17:00|Greece|Côte d'Ivoire|2|1|C|Estadio Castelao|Fortaleza
 201443|2014-06-25 13:00|Nigeria|Argentina|2|3|F|Estadio Beira-Rio|Porto Alegre
-201444|2014-06-25 13:00|Bosnia and Herzegovina|IR Iran|3|1|F|Arena Fonte Nova|Salvador
+201444|2014-06-25 13:00|Bosnia and Herzegovina|Iran|3|1|F|Arena Fonte Nova|Salvador
 201441|2014-06-25 16:00|Honduras|Switzerland|0|3|E|Arena Amazonia|Manaus
 201442|2014-06-25 17:00|Ecuador|France|0|0|E|Estadio do Maracana|Rio De Janeiro
 201445|2014-06-26 13:00|USA|Germany|0|1|G|Arena Pernambuco|Recife
@@ -148,7 +148,7 @@
 200604|2006-06-10 18:00|Trinidad and Tobago|Sweden|0|0|B|FIFA World Cup Stadium, Dortmund|Dortmund
 200605|2006-06-10 21:00|Argentina|Côte d'Ivoire|2|1|C|FIFA World Cup Stadium, Hamburg|Hamburg
 200606|2006-06-11 15:00|Serbia and Montenegro|Netherlands|0|1|C|Zentralstadion|Leipzig
-200607|2006-06-11 18:00|Mexico|IR Iran|3|1|D|Franken-Stadion|Nuremberg
+200607|2006-06-11 18:00|Mexico|Iran|3|1|D|Franken-Stadion|Nuremberg
 200608|2006-06-11 21:00|Angola|Portugal|0|1|D|FIFA World Cup Stadium, Cologne|Cologne
 200612|2006-06-12 15:00|Australia|Japan|3|1|F|Fritz-Walter-Stadion|Kaiserslautern
 200610|2006-06-12 18:00|USA|Czech Republic|0|3|E|FIFA World Cup Stadium, Gelsenkirchen|Gelsenkirchen
@@ -165,7 +165,7 @@
 200621|2006-06-16 15:00|Argentina|Serbia and Montenegro|6|0|C|FIFA World Cup Stadium, Gelsenkirchen|Gelsenkirchen
 200622|2006-06-16 18:00|Netherlands|Côte d'Ivoire|2|1|C|Gottlieb-Daimler-Stadion|Stuttgart
 200623|2006-06-16 21:00|Mexico|Angola|0|0|D|FIFA World Cup Stadium, Hanover|Hanover
-200624|2006-06-17 15:00|Portugal|IR Iran|2|0|D|FIFA World Cup Stadium, Frankfurt|Frankfurt/Main
+200624|2006-06-17 15:00|Portugal|Iran|2|0|D|FIFA World Cup Stadium, Frankfurt|Frankfurt/Main
 200626|2006-06-17 18:00|Czech Republic|Ghana|0|2|E|FIFA World Cup Stadium, Cologne|Cologne
 200625|2006-06-17 21:00|Italy|USA|1|1|E|Fritz-Walter-Stadion|Kaiserslautern
 200628|2006-06-18 15:00|Japan|Croatia|0|0|F|Franken-Stadion|Nuremberg
@@ -549,14 +549,14 @@
 197806|1978-06-03 13:45|Sweden|Brazil|1|1|C|Estadio José María Minella|Mar Del Plata
 197805|1978-06-03 13:45|Austria|Spain|2|1|C|Jose Amalfitani|Buenos Aires
 197807|1978-06-03 16:45|Peru|Scotland|3|1|D|Estadio Olímpico Chateau Carreras|Cordoba
-197808|1978-06-03 16:45|Netherlands|IR Iran|3|0|D|San Martin|Mendoza
+197808|1978-06-03 16:45|Netherlands|Iran|3|0|D|San Martin|Mendoza
 197810|1978-06-06 13:45|Italy|Hungary|3|1|A|Estadio José María Minella|Mar Del Plata
 197811|1978-06-06 16:45|Poland|Tunisia|1|0|B|Arroyito - Estadio Dr. Lisandro de la Torre|Rosario
 197812|1978-06-06 16:45|Germany FR|Mexico|6|0|B|Estadio Olímpico Chateau Carreras|Cordoba
 197809|1978-06-06 19:15|Argentina|France|2|1|A|El Monumental - Estadio Monumental Antonio Vespuci|Buenos Aires
 197814|1978-06-07 13:45|Brazil|Spain|0|0|C|Estadio José María Minella|Mar Del Plata
 197813|1978-06-07 13:45|Austria|Sweden|1|0|C|Jose Amalfitani|Buenos Aires
-197815|1978-06-07 16:45|Scotland|IR Iran|1|1|D|Estadio Olímpico Chateau Carreras|Cordoba
+197815|1978-06-07 16:45|Scotland|Iran|1|1|D|Estadio Olímpico Chateau Carreras|Cordoba
 197816|1978-06-07 16:45|Netherlands|Peru|0|0|D|San Martin|Mendoza
 197818|1978-06-10 15:10|France|Hungary|3|1|A|Estadio José María Minella|Mar Del Plata
 197819|1978-06-10 16:45|Poland|Mexico|3|1|B|Arroyito - Estadio Dr. Lisandro de la Torre|Rosario
@@ -564,7 +564,7 @@
 197817|1978-06-10 19:15|Italy|Argentina|1|0|A|El Monumental - Estadio Monumental Antonio Vespuci|Buenos Aires
 197822|1978-06-11 13:45|Brazil|Austria|1|0|C|Estadio José María Minella|Mar Del Plata
 197821|1978-06-11 13:45|Spain|Sweden|1|0|C|Jose Amalfitani|Buenos Aires
-197823|1978-06-11 16:45|Peru|IR Iran|4|1|D|Estadio Olímpico Chateau Carreras|Cordoba
+197823|1978-06-11 16:45|Peru|Iran|4|1|D|Estadio Olímpico Chateau Carreras|Cordoba
 197824|1978-06-11 16:45|Scotland|Netherlands|3|2|D|San Martin|Mendoza
 197825|1978-06-14 13:45|Germany FR|Italy|0|0|A|El Monumental - Estadio Monumental Antonio Vespuci|Buenos Aires
 197827|1978-06-14 13:45|Netherlands|Austria|5|1|A|Estadio Olímpico Chateau Carreras|Cordoba
