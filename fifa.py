@@ -19,7 +19,6 @@ class script_commands(object):
 class MatchSummary(object):
     def __init__(self, data):
         if not data: return
-        data = data[1:]
         self.date = time.strptime(data[0], '%Y-%m-%d %H:%M')
         self.team = data[1]
         self.opponent = data[2]
@@ -44,13 +43,10 @@ class MatchSummary(object):
 
 def load(file_path:str)->List[MatchSummary]:
     assert os.path.exists(file_path)
-    dup_map, match_list = {}, []
+    match_list = []
     with open(file_path, 'r+') as fp:
         for line in fp.readlines():
             if not line: continue
-            uuid = line[:7]
-            if uuid in dup_map: continue
-            dup_map[uuid] = True
             item = MatchSummary(data=line[:-1].split('|'))
             match_list.append(item)
     def cmp(a:MatchSummary, b:MatchSummary):
@@ -105,6 +101,9 @@ def dump_stat_map(stat_map:Dict[int, List], year_list:List[int]):
             offset += max_stat_count + 1
             max_stat_count = 0
     for row in csv_sheet:
+        length, expect_length = len(row), num_of_horizon * 7
+        if length < expect_length:
+            row.extend(['']*(expect_length-length))
         print(','.join([str(x) for x in row]))
 
 def generate_stat_map(match_list:List[MatchSummary]):
