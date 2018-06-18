@@ -139,13 +139,26 @@ def anlaysis_team_stat(match_list:List[MatchSummary]):
     return result_list
 
 def find_team_stat(match_list:List[MatchSummary], team, year_list:List[int]):
+    result, max_oppo_len, max_team_len = [], 0, 0
     for n in range(len(match_list)):
         item = match_list[n]
         if item.date.tm_year in year_list:
             if item.team.find(team) >= 0:
-                print(item)
+                result.append(item)
+                max_oppo_len = max(max_oppo_len, len(result[-1].opponent))
+                max_team_len = max(max_team_len, len(result[-1].team))
             elif item.opponent.find(team) >=0:
-                print(item.reverse())
+                result.append(item.reverse())
+                max_oppo_len = max(max_oppo_len, len(result[-1].opponent))
+                max_team_len = max(max_team_len, len(result[-1].team))
+    oppo_format = '%%-%ds'%max_oppo_len
+    team_format = '%%-%ds'%max_team_len
+    for n in range(len(result)):
+        item = result[n]
+        content = '%s | %s | %s | %d:%d | %s' % (time.strftime('%Y-%m-%d %H:%M', item.date),
+                                      team_format%item.team, oppo_format%item.opponent, item.score, item.opponent_score,
+                                      item.group)
+        print(content)
 
 def main():
     arguments = argparse.ArgumentParser()
@@ -155,7 +168,7 @@ def main():
     arguments.add_argument('--span', '-s', type=int, default=0)
     arguments.add_argument('--command', '-c',
                            choices=script_commands.get_option_choices(),
-                           default=script_commands.stat[0])
+                           default=script_commands.find[0])
 
     options = arguments.parse_args(sys.argv[1:])
     match_list = load(options.file_path)
