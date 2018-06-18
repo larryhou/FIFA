@@ -34,8 +34,8 @@ def dump_worldcup(url:str):
         item = pyquery.PyQuery(result)
         datetime = decode_match_time(item.find('.mu-i-datetime').text())
         group = decode_match_group(item.find('.mu-i-group').text())
-        stadium = item.find('.mu-i-stadium').text()
-        venue = item.find('.mu-i-venue').text()
+        stadium = re.sub(r',\s*', r'/', item.find('.mu-i-stadium').text())
+        venue = re.sub(r',\s*', r'/', item.find('.mu-i-venue').text())
         team_home = item.find('.t.home .t-nText').text()
         team_home_code = item.find('.t.home .t-nTri').text()
         if team_home_code not in team_abbrs:
@@ -50,7 +50,7 @@ def dump_worldcup(url:str):
         record.extend(score)
         record.append(group.name)
         record.extend([stadium, venue])
-        print('|'.join(record))
+        print(','.join(record))
 
 def main():
     jq = pyquery.PyQuery(url='https://www.fifa.com/fifa-tournaments/statistics-and-records/worldcup/index.html')

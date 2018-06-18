@@ -47,7 +47,7 @@ def load(file_path:str)->List[MatchSummary]:
     with open(file_path, 'r+') as fp:
         for line in fp.readlines():
             if not line: continue
-            item = MatchSummary(data=line[:-1].split('|'))
+            item = MatchSummary(data=line[:-1].split(','))
             match_list.append(item)
     def cmp(a:MatchSummary, b:MatchSummary):
         if a.date.tm_year != b.date.tm_year:
