@@ -35,7 +35,6 @@ def dump_worldcup(url:str):
         datetime = decode_match_time(item.find('.mu-i-datetime').text())
         group = decode_match_group(item.find('.mu-i-group').text())
         stadium = item.find('.mu-i-stadium').text()
-        matchnum = item.find('.mu-i-matchnum').text().split(' ')[-1]
         venue = item.find('.mu-i-venue').text()
         team_home = item.find('.t.home .t-nText').text()
         team_home_code = item.find('.t.home .t-nTri').text()
