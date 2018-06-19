@@ -7,6 +7,7 @@ class script_commands(object):
     dump  = ('d', 'dump')
     find  = ('f', 'find')
     stat  = ('s', 'stat')
+    compaire = ('c', 'compaire')
 
     @classmethod
     def get_option_choices(cls)->List[str]:
@@ -65,9 +66,9 @@ def filter_year_list(stat_map:[int, List], year:int, span:int):
         if span == 0:
             if y < year: continue
         elif span > 0:
-            if y > year + span: continue
+            if y >= year + span: continue
         elif span < 0:
-            if y < year + span: continue
+            if y <= year + span: continue
         temp_list.append(y)
     temp_list.sort(reverse=True)
     return temp_list
@@ -139,31 +140,65 @@ def anlaysis_team_stat(match_list:List[MatchSummary]):
     return result_list
 
 def find_team_stat(match_list:List[MatchSummary], team, year_list:List[int]):
-    result, max_oppo_len, max_team_len = [], 0, 0
+    result = []
     for n in range(len(match_list)):
         item = match_list[n]
         if item.date.tm_year in year_list:
             if item.team.find(team) >= 0:
                 result.append(item)
-                max_oppo_len = max(max_oppo_len, len(result[-1].opponent))
-                max_team_len = max(max_team_len, len(result[-1].team))
             elif item.opponent.find(team) >=0:
                 result.append(item.reverse())
-                max_oppo_len = max(max_oppo_len, len(result[-1].opponent))
-                max_team_len = max(max_team_len, len(result[-1].team))
-    oppo_format = '%%-%ds'%max_oppo_len
-    team_format = '%%-%ds'%max_team_len
-    for n in range(len(result)):
-        item = result[n]
+    pretty_dump(result)
+
+def pretty_dump(match_list:List[MatchSummary]):
+    max_oppo_len, max_team_len = 0, 0
+    for n in range(len(match_list)):
+        item = match_list[n]
+        max_oppo_len = max(max_oppo_len, len(item.opponent))
+        max_team_len = max(max_team_len, len(item.team))
+    oppo_format = '%%-%ds' % max_oppo_len
+    team_format = '%%-%ds' % max_team_len
+    for n in range(len(match_list)):
+        item = match_list[n]
         content = '%s | %s | %s | %d:%d | %s' % (time.strftime('%Y-%m-%d %H:%M', item.date),
-                                      team_format%item.team, oppo_format%item.opponent, item.score, item.opponent_score,
-                                      item.group)
+                                                 team_format % item.team, oppo_format % item.opponent, item.score,
+                                                 item.opponent_score,
+                                                 item.group)
         print(content)
+
+def compare(match_list:List[MatchSummary], team:str, opponent:str, year_list:[int]):
+    face_to_face, oppo_team, oppo_opponent = [], {}, {}
+    for n in range(len(match_list)):
+        item = match_list[n]
+        if item.date.tm_year not in year_list: continue
+        if item.team.find(team) >= 0:
+            if item.opponent.find(opponent) >= 0:
+                face_to_face.append(item)
+            else:
+                if item.opponent not in oppo_team: oppo_team[item.opponent] = []
+                oppo_team[item.opponent].append(item.reverse())
+        elif item.team.find(opponent) >= 0:
+            if item.opponent.find(team) >= 0:
+                face_to_face.append(item.reverse())
+            else:
+                if item.opponent not in oppo_opponent: oppo_opponent[item.opponent] = []
+                oppo_opponent[item.opponent].append(item.reverse())
+    common_opponent = []
+    for name, oppo_list in oppo_team.items():
+        if name in oppo_opponent:
+            common_opponent.extend(oppo_list)
+            common_opponent.extend(oppo_opponent.get(name))
+    from operator import attrgetter
+    common_opponent.sort(key=attrgetter('date.tm_year', 'opponent'), reverse=True)
+    face_to_face.extend(common_opponent)
+    pretty_dump(face_to_face)
+
 
 def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--file-path', '-f', required=True)
     arguments.add_argument('--team', '-t')
+    arguments.add_argument('--opponent', '-o')
     arguments.add_argument('--year', '-y', type=int, default=0)
     arguments.add_argument('--span', '-s', type=int, default=0)
     arguments.add_argument('--command', '-c',
@@ -182,6 +217,8 @@ def main():
         dump_stat_map(stat_map, year_list)
     elif command in script_commands.find:
         find_team_stat(match_list, options.team, year_list)
+    elif command in script_commands.compaire:
+        compare(match_list, options.team, options.opponent, year_list)
     else:
         raise NotImplementedError()
 
