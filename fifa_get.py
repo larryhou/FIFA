@@ -85,7 +85,6 @@ def dump_worldcup_match(url:str):
         item = pyquery.PyQuery(result)
         timeshift = float(item.find('.fi-s__score').attr('data-timeshiftutc')) * 60
         datetime = decode_match_time(item.find('.fi-mu__info__datetime').text(), timeshift)
-        group = decode_match_group(item.find('.fi__info__group').text())
         stadium = re.sub(r',\s*', r'/', item.find('.fi__info__stadium').text())
         venue = re.sub(r',\s*', r'/', item.find('.fi__info__venue').text())
         team_home = item.find('.home .fi-t__nText').text()
@@ -98,7 +97,6 @@ def dump_worldcup_match(url:str):
             team_abbrs[team_away_code] = team_away
         record = []
         record.extend([datetime, team_home, team_away])
-        record.append(group.name)
         record.extend([stadium, venue])
         print(','.join(record))
 
@@ -118,7 +116,7 @@ def main():
     import argparse, sys
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--command', '-c', default=script_commands.fetch_history, choices=script_commands.option_choices())
-    arguments.add_argument('--page-url', '-u')
+    arguments.add_argument('--page-url', '-u', default='https://www.fifa.com/worldcup/matches/')
     options = arguments.parse_args(sys.argv[1:])
     command = options.command
     if command == script_commands.fetch_history:
