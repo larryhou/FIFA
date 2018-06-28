@@ -77,6 +77,7 @@ class ArgumentOptions(object):
         self.command = data.command # type: str
         self.file_path = data.file_path # type: str
         self.team = data.team # type: str
+        self.year = data.year # type: int
 
 def table_print(data_list:typing.List[typing.Tuple]):
     width_list = [0] * len(data_list[0])
@@ -99,7 +100,7 @@ def table_print(data_list:typing.List[typing.Tuple]):
 def search_match(options:ArgumentOptions, connection:sqlite3.Connection):
     cursor = connection.cursor()
     result = cursor.execute('''SELECT date,team,opponent,score,opponent_score,stage,group_name 
-        FROM matches WHERE team=? ORDER BY date DESC''', (options.team,))
+        FROM matches WHERE team=? AND year >=? ORDER BY date DESC''', (options.team, options.year))
     match_list = result.fetchall()
     if len(match_list) > 0:
         result = []
@@ -125,6 +126,7 @@ def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--command', '-c', default=script_commands.search_match, choices=script_commands.option_choices())
     arguments.add_argument('--team', '-t', help='team name for search')
+    arguments.add_argument('--year', '-y', type=int, default=1930, help='year')
     arguments.add_argument('--file-path', '-f', help='history data file with csv format')
     options = ArgumentOptions(data=arguments.parse_args(sys.argv[1:]))
 
