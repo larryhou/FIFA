@@ -3,7 +3,7 @@ import sqlite3, enum, os, time, argparse, sys, io, hashlib
 import typing
 
 class script_commands(object):
-    create_sqlite = 'create-sqlite'
+    update_sqlite = 'update-sqlite'
     search_match = 'search-match'
 
     @classmethod
@@ -24,7 +24,7 @@ def fetch_sqlite(data_filepath:str = None)->sqlite3.Connection:
     if not result.fetchall():
         cursor.execute('''
             CREATE TABLE matches
-            (uuid text UNIQUE NOT NULL, 
+            (uuid text NOT NULL UNIQUE ON CONFLICT IGNORE, 
              date INTEGER NOT NULL, year INTEGER NOT NULL, time text NOT NULL,
              team text NOT NULL, 
              opponent text NOT NULL, 
@@ -99,7 +99,7 @@ def table_print(data_list:typing.List[typing.Tuple]):
 def search_match(options:ArgumentOptions, connection:sqlite3.Connection):
     cursor = connection.cursor()
     result = cursor.execute('''SELECT date,team,opponent,score,opponent_score,stage,group_name 
-        FROM matches WHERE team=?''', (options.team,))
+        FROM matches WHERE team=? ORDER BY date DESC''', (options.team,))
     match_list = result.fetchall()
     if len(match_list) > 0:
         result = []
@@ -129,7 +129,7 @@ def main():
     options = ArgumentOptions(data=arguments.parse_args(sys.argv[1:]))
 
     command = options.command
-    if command == script_commands.create_sqlite:
+    if command == script_commands.update_sqlite:
         assert os.path.exists(options.file_path)
         fetch_sqlite(data_filepath=options.file_path).close()
     elif command == script_commands.search_match:
