@@ -24,7 +24,7 @@ def fetch_sqlite(data_filepath:str = None)->sqlite3.Connection:
     if not result.fetchall():
         cursor.execute('''
             CREATE TABLE matches
-            (uuid text NOT NULL UNIQUE ON CONFLICT IGNORE, 
+            (uuid text NOT NULL UNIQUE ON CONFLICT REPLACE, 
              date INTEGER NOT NULL, year INTEGER NOT NULL, time text NOT NULL,
              team text NOT NULL, 
              opponent text NOT NULL, 
