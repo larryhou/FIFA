@@ -98,18 +98,18 @@ def table_print(data_list:typing.List[typing.Tuple]):
 
 def search_match(options:ArgumentOptions, connection:sqlite3.Connection):
     cursor = connection.cursor()
-    result = cursor.execute('''SELECT date,team,opponent,score,opponent_score,stage 
+    result = cursor.execute('''SELECT date,team,opponent,score,opponent_score,stage,group_name 
         FROM matches WHERE team=?''', (options.team,))
     match_list = result.fetchall()
     if len(match_list) > 0:
         result = []
         for item in match_list:
-            date, team, opponent, score, opponent_score, stage = item
+            date, team, opponent, score, opponent_score, stage, group_name = item
             date = time.strftime('%Y-%m-%d', time.localtime(date))
-            stage = MatchStage(stage)
-            result.append((date, team, opponent, score, opponent_score, stage.name))
+            stage = ':{}:'.format(group_name) if group_name else MatchStage(stage).name
+            result.append((date, team, opponent, score, opponent_score, stage))
         table_print(data_list=result)
-        return 
+        return
     buffer = io.StringIO()
     buffer.write('%')
     for char in options.team:
