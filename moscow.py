@@ -15,7 +15,6 @@ def main():
     for item in result.fetchall():
         team, score, opponent_score, stage = item
         stage = MatchStage(stage)
-        if stage != MatchStage.group: continue
         if team not in match_map: match_map[team] = [team] + [0] * 8
         stat = match_map[team]
         stat[1] += 1
@@ -26,12 +25,13 @@ def main():
         stat[5] += score
         stat[6] += opponent_score
         stat[7] += netscore
-        stat[8] += 3 if netscore > 0 else (1 if netscore == 0 else 0)
+        if stage == MatchStage.group:
+            stat[8] += 3 if netscore > 0 else (1 if netscore == 0 else 0)
     stat_list = []
     for _, stat in match_map.items():
         stat_list.append(stat)
     from operator import itemgetter
-    stat_list.sort(key=itemgetter(8, 7, 5), reverse=True)
+    stat_list.sort(key=itemgetter(2, 3, 5), reverse=True)
     stat_list.insert(0, column_header)
     table_print(stat_list, print_header=True)
 
