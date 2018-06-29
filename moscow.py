@@ -25,7 +25,7 @@ def main():
     connection = sqlite3.connect('fifa.sqlite')
     cursor = connection.cursor()
     result = cursor.execute('SELECT team,score,opponent_score,stage,group_name FROM matches WHERE year=2018')
-    column_header = ['TEAM', 'MP', 'W', 'D', 'L', 'GF', 'GA', '+/-', 'PTS', '', '']
+    column_header = ['', 'MP', 'W', 'D', 'L', 'GF', 'GA', '+/-', 'PTS', '', '']
     match_map = {} # type: dict[str, list]
     for item in result.fetchall():
         team, score, opponent_score, stage, group_name = item
@@ -46,7 +46,7 @@ def main():
     for _, stat in match_map.items():
         stat_list.append(stat)
     from operator import itemgetter
-    stat_list.sort(key=itemgetter(2, 3, 5), reverse=True)
+    stat_list.sort(key=itemgetter(1, 2, 3, 5), reverse=True)
     stat_list.insert(0, column_header)
     table_print(stat_list, print_header=True)
 
