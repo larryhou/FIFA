@@ -79,7 +79,7 @@ class ArgumentOptions(object):
         self.team = data.team # type: str
         self.year = data.year # type: int
 
-def table_print(data_list:typing.List[typing.Tuple]):
+def table_print(data_list:typing.List[typing.Tuple], print_header:bool = False):
     width_list = [0] * len(data_list[0])
     for r in range(len(data_list)):
         record = data_list[r]
@@ -90,12 +90,16 @@ def table_print(data_list:typing.List[typing.Tuple]):
             alias_record.append(item)
         data_list[r] = alias_record
     buffer = io.StringIO()
+    seperator = []
     for n in range(len(width_list)):
-        buffer.write('{{:{}s}} | '.format(width_list[n]))
+        buffer.write('{{:>{}}} | '.format(width_list[n]))
+        seperator.append('-'*(width_list[n] + 1 + (0 if n == 0 else 1)))
     buffer.seek(0)
     record_format = buffer.read() # type: str
-    for record in  data_list:
+    for n in range(len(data_list)):
+        record = data_list[n]
         print(record_format.format(*record))
+        if print_header and n == 0: print('|'.join(seperator) + '|')
 
 def search_match(options:ArgumentOptions, connection:sqlite3.Connection):
     cursor = connection.cursor()
