@@ -1,21 +1,36 @@
 #!/usr/bin/env python3
 from sqlite_fifa import MatchStage, table_print
 
+PROMOTED_TEAMS = [
+    'France',
+    'Argentina',
+    'Uruguay',
+    'Portugal',
+    'Spain',
+    'Russia',
+    'Croatia',
+    'Denmark',
+    'Brazil',
+    'Mexico',
+    'Belgium',
+    'Japan',
+    'Sweden',
+    'Switzerland',
+    'Colombia',
+    'England'
+]
+
 def main():
-    # import argparse, sys
-    # arguments = argparse.ArgumentParser()
-    # arguments.add_argument('--file-path', '-f', required=True)
-    # options = arguments.parse_args(sys.argv[1:])
-    import sqlite3, time
+    import sqlite3
     connection = sqlite3.connect('fifa.sqlite')
     cursor = connection.cursor()
-    result = cursor.execute('SELECT team,score,opponent_score,stage FROM matches WHERE year=2018')
-    column_header = ['TEAM', 'MP', 'W', 'D', 'L', 'GF', 'GA', '+/-', 'PTS']
+    result = cursor.execute('SELECT team,score,opponent_score,stage,group_name FROM matches WHERE year=2018')
+    column_header = ['TEAM', 'MP', 'W', 'D', 'L', 'GF', 'GA', '+/-', 'PTS', '', '']
     match_map = {} # type: dict[str, list]
     for item in result.fetchall():
-        team, score, opponent_score, stage = item
+        team, score, opponent_score, stage, group_name = item
         stage = MatchStage(stage)
-        if team not in match_map: match_map[team] = [team] + [0] * 8
+        if team not in match_map: match_map[team] = [team] + [0] * 8 + [group_name, '★' if team in PROMOTED_TEAMS else ' ']
         stat = match_map[team]
         stat[1] += 1
         netscore = score - opponent_score

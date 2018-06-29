@@ -91,15 +91,16 @@ def table_print(data_list:typing.List[typing.Tuple], print_header:bool = False):
         data_list[r] = alias_record
     buffer = io.StringIO()
     seperator = []
+    buffer.write('| ')
     for n in range(len(width_list)):
         buffer.write('{{:>{}}} | '.format(width_list[n]))
-        seperator.append('-'*(width_list[n] + 1 + (0 if n == 0 else 1)))
+        seperator.append(':' + '-'*width_list[n] + ':')
     buffer.seek(0)
     record_format = buffer.read() # type: str
     for n in range(len(data_list)):
         record = data_list[n]
         print(record_format.format(*record))
-        if print_header and n == 0: print('|'.join(seperator) + '|')
+        if print_header and n == 0: print('|' + '|'.join(seperator) + '|')
 
 def search_match(options:ArgumentOptions, connection:sqlite3.Connection):
     cursor = connection.cursor()
