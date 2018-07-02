@@ -58,7 +58,10 @@ def dump_worldcup_score(url:str):
         item = pyquery.PyQuery(result)
         timeshift = float(item.find('.fi-s__score').attr('data-timeshiftutc')) * 60
         datetime = decode_match_time(item.find('.fi-mu__info__datetime').text(), timeshift)
-        group = decode_match_group(item.find('.fi__info__group').text())
+        group_data = item.find('.fi__info__group').text()
+        if not group_data:
+            group_data = item.parent().parent().find('span.fi-mu-list__head__date').text()
+        group = decode_match_group(group_data)
         stadium = re.sub(r',\s*', r'/', item.find('.fi__info__stadium').text())
         venue = re.sub(r',\s*', r'/', item.find('.fi__info__venue').text())
         team_home = item.find('.home .fi-t__nText').text()
