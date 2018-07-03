@@ -14,6 +14,7 @@ def decode_match_time(value:str, timeshift:float)->str:
     return time.strftime('%Y-%m-%d %H:%M', datetime)
 
 def decode_match_group(value:str)->MatchGroup:
+    value = value.strip()
     if re.match(r'^Group \w$', value):
         name = value.split(' ')[-1]
         if re.match(r'^\d+$', name): return MatchGroup(int(name))
@@ -88,6 +89,13 @@ def dump_worldcup_match(url:str):
         item = pyquery.PyQuery(result)
         timeshift = float(item.find('.fi-s__score').attr('data-timeshiftutc')) * 60
         datetime = decode_match_time(item.find('.fi-mu__info__datetime').text(), timeshift)
+        group_data = item.find('.fi__info__group').text()
+        if not group_data:
+            parent = item.parent()
+            if not parent.attr('class') == 'fi-mu-list':
+                parent = parent.parent()
+            group_data = parent.find('span.fi-mu-list__head__date').text()
+        group = decode_match_group(group_data)
         stadium = re.sub(r',\s*', r'/', item.find('.fi__info__stadium').text())
         venue = re.sub(r',\s*', r'/', item.find('.fi__info__venue').text())
         team_home = item.find('.home .fi-t__nText').text()
@@ -100,6 +108,7 @@ def dump_worldcup_match(url:str):
             team_abbrs[team_away_code] = team_away
         record = []
         record.extend([datetime, team_home, team_away])
+        record.append(group.name)
         record.extend([stadium, venue])
         print(','.join(record))
 
