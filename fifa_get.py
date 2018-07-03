@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import requests, pyquery, enum, re, json, time
+from sqlite_fifa import table_print
 
 team_abbrs = {}
 
@@ -85,6 +86,7 @@ def dump_worldcup_match(url:str):
     response = requests.get(url)
     content = response.text.encode(response.apparent_encoding).decode('utf-8')
     jq = pyquery.PyQuery(content)
+    record_list = []
     for result in jq.find('div .fi-mu.fixture'):
         item = pyquery.PyQuery(result)
         timeshift = float(item.find('.fi-s__score').attr('data-timeshiftutc')) * 60
@@ -110,7 +112,9 @@ def dump_worldcup_match(url:str):
         record.extend([datetime, team_home, team_away])
         record.append(group.name)
         record.extend([stadium, venue])
-        print(','.join(record))
+        record_list.append(record)
+    record_list.insert(0, ['DATE', 'TEAM', 'OPPONENT', 'STAGE', 'STADIUM', 'VANUE'])
+    table_print(data_list=record_list, print_header=True)
 
 class script_commands(object):
     fetch_history = 'fetch-history'
