@@ -46,7 +46,7 @@ def main():
     for _, stat in match_map.items():
         stat_list.append(stat)
     from operator import itemgetter
-    stat_list.sort(key=itemgetter(1, 2, 3, 5), reverse=True)
+    stat_list.sort(key=itemgetter(1, 2, 3, 5,7), reverse=True)
     stat_list.insert(0, column_header)
     table_print(stat_list, print_header=True)
 
